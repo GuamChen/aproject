@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style type="text/css">
+    html {
+      height: 100%;
+    }
+
+    body {
+      height: 100%;
+      margin: 0px;
+      padding: 0px;
+    }
+
+    #container {
+      height: 100%;
+    }
+
+    .contro {
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 9999;
+    }
+
+    span {
+      display: inline-block;
+      width: 70px;
+      text-align: right;
+    }
+
+    button {
+      margin-top: 5px;
+      font-size: 16px;
+    }
+  </style>
+  <script type="text/javascript"
+    src="https://api.map.baidu.com/api?v=1.0&&type=webgl&ak=eKcfKQuDCL8eUyAIzZImGHxQZsIgpHSA"></script>
+</head>
+
+<body>
+  <div id="container"></div>
+  <div class="contro">
+    <div class="controlHeading">
+      <span>heading:</span>
+      <button class="add"> +</button>
+      <input type="text">
+      <button class="minus">-</button>
+    </div>
+    <div class="controlTilt">
+      <span>tilt:</span>
+      <button class="add"> +</button>
+      <input type="text">
+      <button class="minus">-</button>
+    </div>
+    <div class="automation">
+      <button class="controLoop">loop</button>
+      <button class="controStop">stop</button>
+    </div>
+  </div>
+
+
+  <script>
+    var map = new BMapGL.Map("container");
+    var point = new BMapGL.Point(116.135398, 24.33442); // 创建点坐标，以梅州市为点
+    map.centerAndZoom(point, 19);
+    map.setMapType(BMAP_NORMAL_MAP); // 设置地图类型为地球模式
+    map.enableScrollWheelZoom(true); // 开启鼠标滚轮缩放
+
+    heading = 64// 初始地图旋转角度
+    tilt = 73// 初始地图倾斜角度
+
+    map.setHeading(heading);   //设置地图旋转角度
+    map.setTilt(tilt);       //设置地图的倾斜角度
+
+    // 设置输入框数据输入
+    var headingInput = document.querySelector('.controlHeading input')
+    var tiltInput = document.querySelector('.controlTilt input')
+    headingInput.value = heading
+    tiltInput.value = tilt
+
+    headingInput.addEventListener('input', function () {
+      heading = +headingInput.value
+      map.setHeading(heading)
+    })
+    tiltInput.addEventListener('input', function () {
+      tilt = +tiltInput.value
+      map.setTilt(tilt)
+    })
+
+    // 设置+-按钮点击事件
+    var buttonAdd = document.querySelectorAll('.add')
+    var buttonMinus = document.querySelectorAll('.minus')
+    buttonAdd[0].onclick = function () {
+      heading++;
+      map.setHeading(heading);
+      headingInput.value = heading
+    }
+    buttonAdd[1].onclick = function () {
+      tilt++
+      map.setTilt(tilt)
+      tiltInput.value = tilt
+    }
+    buttonMinus[0].onclick = function () {
+      heading--
+      map.setHeading(heading)
+      headingInput.value = heading
+    }
+    buttonMinus[1].onclick = function () {
+      tilt--
+      map.setTilt(tilt)
+      tiltInput.value = tilt
+    }
+
+    // 设置自动旋转和暂停
+    var timer
+    var loop = document.querySelector('.controLoop')
+    var stop = document.querySelector('.controStop')
+    stop.onclick = function () {
+      clearInterval(timer)
+      timer = null
+    }
+    loop.onclick = function () {
+      if (timer) {
+        return;
+      }
+      timer = setInterval(function () {
+        heading++;
+        map.setHeading(heading);
+        headingInput.value = heading
+      }, 500)
+    }
+
+  </script>
+</body>
+
+</html>

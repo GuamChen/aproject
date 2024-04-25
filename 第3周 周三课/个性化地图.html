@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>个性化地图</title>
+    <style type="text/css">
+      html {
+        height: 100%;
+      }
+
+      body {
+        height: 100%;
+        margin: 0px;
+        padding: 0px;
+      }
+
+      #container {
+        height: 100%;
+      }
+    </style>
+    <script
+      type="text/javascript"
+      src="https://api.map.baidu.com/api?v=1.0&type=webgl&ak=XRG35hSvB0CmOmIYs55IpzF35Af5l3Yw"
+    ></script>
+  </head>
+
+  <body>
+    <div id="container"></div>
+  </body>
+</html>
+<script>
+  var map = new BMapGL.Map("container"); // 创建地图实例
+  map.centerAndZoom(new BMapGL.Point(116.404, 39.915), 15);
+  map.enableScrollWheelZoom(true);
+
+  map.setMapStyleV2({     
+  styleId: '1345ceb46083ca6f1b703240a4ef334f'
+});
+</script>
