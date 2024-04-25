@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body,
+    html,
+    #container {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+  </style>
+  <script type="text/javascript"
+    src="https://api.map.baidu.com/api?type=webgl&v=1.0&ak=G1LFyjrNGIkns5OfpZnrCGAKxpycPLwb"></script>
+</head>
+
+<body>
+  <div id="container"></div>
+  <script>
+    var map = new BMapGL.Map('container', {
+      enableDblclickZoom: false,
+      displayOptions: {
+        building: false
+      }
+    });
+    map.centerAndZoom(new BMapGL.Point(116.13528, 24.288616), 10);
+    map.enableScrollWheelZoom(true);
+    map.setTilt(50);
+
+    var bd1 = new BMapGL.Boundary();
+
+    var areas = ['广东省梅州市梅江区', '广东省梅州市梅县区', '广东省梅州市平远县', '广东省梅州市蕉岭县', '广东省梅州市大埔县', '广东省梅州市丰顺县', '广东省梅州市五华县', '广东省梅州市兴宁市'];
+    var colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#F08080', '#4c4c4c'];
+    var overlays = [];
+
+    for (let i = 0; i < areas.length; i++) {
+      bd1.get(areas[i], function (rs) {
+        let count = rs.boundaries.length;
+        for (let j = 0; j < count; j++) {
+          let path = [];
+          let str = rs.boundaries[j].replace(' ', '');
+          let points = str.split(';');
+          for (let k = 0; k < points.length; k++) {
+            let lng = points[k].split(',')[0];
+            let lat = points[k].split(',')[1];
+            path.push(new BMapGL.Point(lng, lat));
+          }
+          // 创建柱状覆盖物
+          let prism = new BMapGL.Prism(path, 8000, {
+            topFillColor: colors[i],  // 使用不同颜色
+            topFillOpacity: 0.6,
+            sideFillColor: colors[i],
+            sideFillOpacity: 0.9
+          });
+          map.addOverlay(prism);
+
+          // 为每个覆盖物添加鼠标点击事件监听器
+          prism.addEventListener('mouseover', function (e) {
+            prismMouseOver(e)
+          });
+
+          // 鼠标点击事件
+          function prismMouseOver(e) {
+            var pointNum = e.latLng //获取移入坐标
+
+            // 红色线段覆盖点击那个prism
+            var polygon = new BMapGL.Polygon(path, { strokeColor: "red", strokeWeight: 3, strokeOpacity: 1 });
+            map.addOverlay(polygon);
+
+            // 创建一个文本标记覆盖物
+            var label = new BMapGL.Label(areas[i], {
+              position: new BMapGL.Point(pointNum.lng, pointNum.lat),
+              offset: new BMapGL.Size(20, -10)
+            });
+            label.setStyle({
+              padding: '10px',
+              color: '#f40',
+              fontSize: '12px',
+              fontWeight: 'bold'
+            });
+            map.addOverlay(label)
+
+            // 当离开线段覆盖物后，把柱状覆盖物加回来，同时把文本覆盖物rm
+            polygon.addEventListener('mouseout', function (e) {
+              map.addOverlay(prism)
+              map.removeOverlay(polygon)
+              map.removeOverlay(label)
+            })
+
+            // 移除柱状覆盖物
+            map.removeOverlay(prism);
+          }
+
+        }
+      });
+    }
+
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script type="text/javascript"
+    src="//api.map.baidu.com/api?v=1.0&type=webgl&ak=eKcfKQuDCL8eUyAIzZImGHxQZsIgpHSA"></script>
+  <script type="text/javascript" src="//api.map.baidu.com/library/TrackAnimation/src/TrackAnimation_min.js"></script>
+  <style>
+    #container {
+      height: 100vh;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="container"></div>
+  <script>
+    var map = new BMapGL.Map("container");
+    var point = new BMapGL.Point(116.135398, 24.33442);
+    map.centerAndZoom(point, 17);
+    map.enableScrollWheelZoom(true);
+
+    // 提供的坐标数组
+    var coordinates = [
+      [116.13234, 24.335833],
+      [116.132736, 24.33375],
+      [116.132089, 24.332301],
+      [116.13243, 24.330721],
+      [116.132358, 24.329363],
+      [116.134568, 24.33133],
+      [116.137587, 24.332104],
+      [116.139114, 24.332219],
+      [116.139545, 24.334244],
+      [116.139096, 24.335956],
+      [116.13694, 24.337635],
+      [116.135467, 24.339504],
+      [116.133167, 24.33822],
+      [116.132897, 24.336145],
+      [116.13234, 24.335833],
+    ]
+
+    var pointAnimation = [];
+    for (var i = 0; i < coordinates.length; i++) {
+      var coordinate = coordinates[i];
+      pointAnimation.push(new BMapGL.Point(coordinate[0], coordinate[1]));
+    }
+    var pl = new BMapGL.Polyline(pointAnimation);
+
+    var trackAni = new BMapGLLib.TrackAnimation(map, pl, {
+      overallView: true, // 动画完成后自动调整视野到总览
+      tilt: 30,          // 轨迹播放的角度，默认为55
+      duration: 15000,   // 动画持续时长，默认为10000，单位ms
+      delay: 0        // 动画开始的延迟，默认0，单位ms
+    });
+
+    trackAni.start();
+  </script>
+
+</body>
+
+</html>

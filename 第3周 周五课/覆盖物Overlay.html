@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baidu Map Demo</title>
+    <script type="text/javascript"
+        src="http://api.map.baidu.com/api?v=3.0&ak=XRG35hSvB0CmOmIYs55IpzF35Af5l3Yw"></script>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+
+    <script>
+        // 初始化地图
+        var map = new BMap.Map("map"); // "map"是地图容器的ID
+        var point = new BMap.Point(116.13591553206119, 24.33465721658529); // 嘉应学院的经纬度
+        map.centerAndZoom(point, 15); // 设置中心点和缩放级别
+
+        // 添加缩放控件
+        map.addControl(new BMap.NavigationControl());
+        // 添加比例尺控件
+        map.addControl(new BMap.ScaleControl());
+        map.enableScrollWheelZoom(true);
+
+
+
+        var marker = new BMap.Marker(point);        // 创建标注  
+        map.addOverlay(marker);                     // 将标注添加到地图中
+        marker.enableDragging();
+        marker.addEventListener("dragend", function (e) {
+            alert("当前位置：" + e.point.lng + ", " + e.point.lat);
+        })
+
+
+
+        var opts = {
+            width: 250,     // 信息窗口宽度  
+            height: 100,     // 信息窗口高度  
+            title: "嘉应学院"  // 信息窗口标题  
+        }
+        var infoWindow = new BMap.InfoWindow("嘉应学院欢迎您", opts);  // 创建信息窗口对象  
+        map.openInfoWindow(infoWindow, map.getCenter());      // 打开信息窗口  
+
+
+        var polyline = new BMap.Polyline([
+            new BMap.Point(116.1353, 24.3342),
+            new BMap.Point(116.1253, 24.3342),
+            new BMap.Point(116.1253, 24.3242),
+            new BMap.Point(116.1353, 24.3242),
+            new BMap.Point(116.1353, 24.3342),
+        ],
+            { strokeColor: "red", strokeWeight: 6, strokeOpacity: 0.5 }
+        );
+        map.addOverlay(polyline);
+
+
+
+        // map.addEventListener("click", function (e) {
+        //     alert("您点击了地图。" + e.point.lng + ", " + e.point.lat);
+
+        // });
+
+        // map.addEventListener("dragend", function () {
+        //     var center = map.getCenter();
+        //     alert("地图中心点变更为：" + center.lng + ", " + center.lat);
+        // });
+
+        // map.addEventListener("zoomend", function () {
+        //     alert("地图缩放至：" + this.getZoom() + "级");
+        // });
+
+
+
+        function showInfo(e) {
+            var opts = {
+                width: 250,     // 信息窗口宽度  
+                height: 100,     // 信息窗口高度  
+                title: "可视化"  // 信息窗口标题  
+            }
+            var infoWindow = new BMap.InfoWindow("可视化有意思", opts);  // 创建信息窗口对象  
+            var clickpoint = new BMap.Point(e.point.lng, e.point.lat);
+            map.openInfoWindow(infoWindow, clickpoint);      // 打开信息窗口  
+        }
+        map.addEventListener("click", showInfo);
+
+
+
+
+
+    </script>
+</body>
+
+</html>

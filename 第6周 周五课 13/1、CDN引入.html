@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>three js</title>
+  </head>
+  <body>
+    <div></div>
+  </body>
+</html>
+
+<!-- 静态 CDN引入 three.js -->
+<script src="https://cdn.bootcss.com/three.js/r83/three.min.js"></script>
+
+<script>
+  // 创建3D场景对象Scene
+  const scene = new THREE.Scene();
+
+  //创建一个长方体几何对象Geometry
+  const geometry = new THREE.BoxGeometry(100, 100, 100);
+  //创建一个材质对象Material
+  const material = new THREE.MeshBasicMaterial({
+    color: 0xff0000, //0xff0000设置材质颜色为红色
+  });
+
+  const mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+  mesh.position.set(0, 10, 0);
+  scene.add(mesh);
+
+  const width = 800;
+  const hight = 500;
+
+  // 提供相机 (透视投影相机、 正投影相机)
+  // const camera = new THREE.PerspectiveCamera(30, width / hight, 1, 3000);
+  const camera = new THREE.PerspectiveCamera();
+  camera.position.set(200, 200, 200); // 设置相机位置
+  camera.lookAt(mesh.position); // 原点
+
+  const renderer = new THREE.WebGLRenderer();
+  renderer.setSize(width, hight);
+  renderer.render(scene, camera);
+
+  document.body.appendChild(renderer.domElement);
+</script>

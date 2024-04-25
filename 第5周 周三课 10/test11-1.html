@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style type="text/css">
+    html {
+      height: 100%
+    }
+
+    body {
+      height: 100%;
+      margin: 0px;
+      padding: 0px
+    }
+
+    #container {
+      height: 100vh;
+    }
+  </style>
+  <script type="text/javascript"
+    src="https://api.map.baidu.com/api?v=1.0&&type=webgl&ak=eKcfKQuDCL8eUyAIzZImGHxQZsIgpHSA"></script>
+  <script type="text/javascript" src="//api.map.baidu.com/library/TrackAnimation/src/TrackAnimation_min.js"></script>
+</head>
+
+<body>
+  <div id="container"></div>
+  <script>
+    var map = new BMapGL.Map("container");
+    var point = new BMapGL.Point(116.135398, 24.33442);
+    map.centerAndZoom(point, 19);
+    map.enableScrollWheelZoom(true);
+    map.setTilt(75);
+
+    var centerPoint = new BMapGL.Point(116.135398, 24.33442);
+
+    // 提供的坐标数组
+    var coordinates = [
+      [116.13234, 24.335833],
+      [116.132736, 24.33375],
+      [116.132089, 24.332301],
+      [116.13243, 24.330721],
+      [116.132358, 24.329363],
+      [116.134568, 24.33133],
+      [116.137587, 24.332104],
+      [116.139114, 24.332219],
+      [116.139545, 24.334244],
+      [116.139096, 24.335956],
+      [116.13694, 24.337635],
+      [116.135467, 24.339504],
+      [116.133167, 24.33822],
+      [116.132897, 24.336145],
+      [116.13234, 24.335833],
+    ]
+
+    // 定义关键帧数组
+    var keyFrames = [];
+    for (var i = 0; i < coordinates.length; i++) {
+      var coordinate = coordinates[i];
+      var point = new BMapGL.Point(coordinate[0], coordinate[1]);
+
+      // 计算当前点到中心点的方向角度
+      var dx = point.lng - centerPoint.lng;
+      var dy = point.lat - centerPoint.lat;
+      var heading = Math.atan2(dy, dx) * (180 / Math.PI) + 100;
+
+      var keyFrame = {
+        center: point,
+        zoom: 19,
+        tilt: 75,
+        heading: heading,
+        percentage: i / (coordinates.length - 1)
+      };
+      keyFrames.push(keyFrame);
+    }
+
+    // 定义动画参数
+    var opts = {
+      duration: 15000,
+      delay: 0,
+      iteration: 1
+    };
+
+    // 创建动画实例
+    var animation = new BMapGL.ViewAnimation(keyFrames, opts);
+
+    // 监听动画开始事件
+    animation.addEventListener('animationstart', function (e) {
+      console.log('Animation started');
+    });
+
+    // 应用动画到地图
+    map.startViewAnimation(animation);
+
+
+
+
+
+
+  </script>
+
+</body>
+
+</html>
